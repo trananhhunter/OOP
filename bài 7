@@ -1,0 +1,101 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip> // Để định dạng xuất dữ liệu
+using namespace std;
+
+// Lớp Thí Sinh
+class ThiSinh {
+private:
+    string maThiSinh;
+    string hoTen;
+    float diemToan, diemLy, diemHoa;
+
+public:
+    // Hàm nhập thông tin
+    void nhap() {
+        cout << "Nhập mã thí sinh: ";
+        cin >> maThiSinh;
+        cin.ignore(); // Bỏ ký tự xuống dòng
+        cout << "Nhập họ tên: ";
+        getline(cin, hoTen);
+        cout << "Nhập điểm Toán: ";
+        cin >> diemToan;
+        cout << "Nhập điểm Lý: ";
+        cin >> diemLy;
+        cout << "Nhập điểm Hóa: ";
+        cin >> diemHoa;
+    }
+
+    // Hàm xuất thông tin
+    void xuat() const {
+        cout << left << setw(10) << maThiSinh
+             << setw(20) << hoTen
+             << setw(8) << diemToan
+             << setw(8) << diemLy
+             << setw(8) << diemHoa
+             << setw(8) << tongDiem() << endl;
+    }
+
+    // Hàm tính tổng điểm
+    float tongDiem() const {
+        return diemToan + diemLy + diemHoa;
+    }
+
+    // Kiểm tra nếu có môn nào dưới 2 điểm
+    bool coMonDuoi2() const {
+        return diemToan < 2 || diemLy < 2 || diemHoa < 2;
+    }
+};
+
+// Hàm chính
+int main() {
+    int n;
+    cout << "Nhập số lượng thí sinh: ";
+    cin >> n;
+
+    vector<ThiSinh> danhSach(n);
+
+    // Nhập thông tin cho từng thí sinh
+    for (int i = 0; i < n; ++i) {
+        cout << "\nNhập thông tin thí sinh thứ " << i + 1 << ":\n";
+        danhSach[i].nhap();
+    }
+
+    // In ra danh sách thí sinh
+    cout << "\nDanh sách thí sinh:\n";
+    cout << left << setw(10) << "Mã TS"
+         << setw(20) << "Họ Tên"
+         << setw(8) << "Toán"
+         << setw(8) << "Lý"
+         << setw(8) << "Hóa"
+         << setw(8) << "Tổng\n";
+    for (const auto &ts : danhSach) {
+        ts.xuat();
+    }
+
+    // Tìm thí sinh có tổng điểm cao nhất
+    ThiSinh *thiSinhDiemCaoNhat = &danhSach[0];
+    for (int i = 1; i < n; ++i) {
+        if (danhSach[i].tongDiem() > thiSinhDiemCaoNhat->tongDiem()) {
+            thiSinhDiemCaoNhat = &danhSach[i];
+        }
+    }
+    cout << "\nThí sinh có tổng điểm cao nhất là:\n";
+    thiSinhDiemCaoNhat->xuat();
+
+    // In danh sách thí sinh có tổng điểm >= 21 và không có môn nào dưới 2
+    cout << "\nThí sinh có tổng điểm >= 21 và không có môn nào dưới 2:\n";
+    bool coThiSinh = false;
+    for (const auto &ts : danhSach) {
+        if (ts.tongDiem() >= 21 && !ts.coMonDuoi2()) {
+            ts.xuat();
+            coThiSinh = true;
+        }
+    }
+    if (!coThiSinh) {
+        cout << "Không có thí sinh nào thỏa mãn điều kiện.\n";
+    }
+
+    return 0;
+}
